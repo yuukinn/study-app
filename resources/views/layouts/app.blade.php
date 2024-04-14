@@ -14,7 +14,10 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link rel="stylesheet" href="css/color.css">
+        <link rel="stylesheet" href="/css/color.css">
+        @if( isset($script) )
+            {{ $script }}
+        @endif
     </head>
     <body class="font-sans antialiased background-color">
         <div class="min-h-screen">
@@ -31,7 +34,7 @@
             @endif
 
             <!-- Page Content -->
-            <main class="container mx-auto pt-8">
+            <main class="container mx-auto py-8">
                 {{ $slot }}
             </main>
         </div>

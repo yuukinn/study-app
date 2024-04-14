@@ -9,4 +9,9 @@ class Step extends Model
 {
     use HasFactory;
     protected $keyType = 'string';
+
+    public function step()
+    {
+        return $this->belongsTo(Step::class);
+    }
 }

@@ -10,7 +10,7 @@
             <button type="submit" class="focus:outline-none text-while bg-green-700
             hover:bg-gray-800 focus:ring-4 focus:ring-green-300 font-medium rounded text-sm px-5 py-2.5 ml-2">検索</button>
         </form>
-        <a href="" class="focus:outline-noe bg-green-700 hover:bg-green-800 focus:ring-4
+        <a href="{{ route('recipe.create') }}" class="focus:outline-noe bg-green-700 hover:bg-green-800 focus:ring-4
          focus:ring-green-300 font-medium rounded text-sm px-5 py-2.5">レシピを投稿</a>
     </div>
 </section>
