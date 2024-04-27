@@ -21,7 +21,7 @@
     </head>
     <body class="font-sans antialiased background-color">
         <div class="min-h-screen">
-            <!-- @include('layouts.announce-header') -->
+            @include('layouts.announce-header')
             @include('layouts.global-header')
             @include('flash::message')
 
