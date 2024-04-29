@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/recipes/edit/{id}', [RecipeController::class, 'update'])->name('recipe.update');
     Route::delete('/recipes/{id}', [RecipeController::class, 'destroy'])->name('recipe.destroy');
     Route::post('/recipes/{id}/review', [ReviewController::class, 'store'])->name('review.store');
+    Route::post('/recipes/{id}/favorite/store', [FavoriteController::class, 'store'])->name('favorite.store');
+    Route::post('/recipes/{id}/favorite/edit', [FavoriteController::class, 'update'])->name('favorite.update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

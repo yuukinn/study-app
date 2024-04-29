@@ -6,17 +6,27 @@
             <div class="col-span-1">
                 <img src="{{ $recipe['image'] }}" alt="{{ $recipe['title'] }}" class="object-cover w-full aspect-square">
             </div>
-            <div class="col-span-1 p-4">
-                <p class="mb-4">{{ $recipe['description'] }}</p>
-                <p class="mb-4 text-gray-500">{{ $recipe['user']['name'] }}</p>
-                <h4 class="text-2xl font-bold mb-2">材料</h4>
-                <ul class="text-gray-500 ml-6">
-            @foreach($recipe['ingredients'] as $i)
-                    <li>{{ $i['name']}} : {{ $i['quantity'] }}</li>
-            @endforeach
-                </ul>
+            <div class="col-span-1 p-4 flex justify-between">
+                <div class="">
+                    <p class="mb-4">{{ $recipe['description'] }}</p>
+                    <p class="mb-4 text-gray-500">{{ $recipe['user']['name'] }}</p>
+                    <h4 class="text-2xl font-bold mb-2">材料</h4>
+                    <ul class="text-gray-500 ml-6">
+                @foreach($recipe['ingredients'] as $i)
+                        <li>{{ $i['name']}} : {{ $i['quantity'] }}</li>
+                @endforeach
+                    </ul>
+                </div>
+                <div class="justify-end">
+                    <button id="favorite">
+                        <svg xmlns="http://www.w3.org/2000/svg" id="favorite-svg" fill=" {{ ($is_favorite['favorite'] ?? false) ? 'yellow' : 'none' }} " viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
+        <input type="hidden" id="is_favorite" value="{{ $is_favorite['favorite'] ?? false ? $is_favorite['favorite'] : ''}}">
         <br>
         <!-- steps -->
         <div class="">
@@ -101,3 +111,63 @@
    
     </div>
 </x-app-layout>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    document.getElementById('favorite').addEventListener('click', function(){
+
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    let currentUrl = document.URL;
+
+    let is_favorite = document.getElementById('is_favorite');
+    
+    console.log(typeof is_favorite);
+
+    if (is_favorite.value == ''){
+        console.log("o")
+        $.ajax({
+            url:currentUrl + '/favorite/store',
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function(res){
+                let favorite = document.getElementById('is_favorite');
+                favorite.value = res;
+                let savgElement = document.getElementById('favorite-svg')
+                savgElement.setAttribute('fill', 'yellow');
+            },
+            error: function(xhr, status, error){
+                console.log('Ajaxデータ送信エラー:', error);
+            }
+        });
+    } else {
+        $.ajax({
+            url:currentUrl + '/favorite/edit',
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            },
+            success: function(res){
+                console.log(res);
+                let favorite = document.getElementById('is_favorite');
+                favorite.value = res;
+                // 非同期通信を行なっているので、色の値をセット
+                if (res) {
+                    let savgElement = document.getElementById('favorite-svg')
+                    savgElement.setAttribute('fill', 'yellow');
+                } else {
+                    let savgElement = document.getElementById('favorite-svg')
+                    savgElement.setAttribute('fill', 'none');
+                }
+            },
+            error: function(xhr, status, error){
+                console.log('Ajaxデータ送信エラー:', error);
+            }
+        });
+
+    }
+
+});
+</script>

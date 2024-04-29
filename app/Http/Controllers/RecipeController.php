@@ -11,6 +11,7 @@ use App\Models\Recipe;
 use App\Models\Category;
 use App\Models\Step;
 use App\Models\Ingredient;
+use App\Models\Favorite;
 use App\Http\Requests\RecipeCreateRequest;
 use App\Http\Requests\RecipeUpdateRequest;
 use Illuminate\Support\Facades\DB;
@@ -65,11 +66,13 @@ class RecipeController extends Controller
             'recipes.created_at',
             'recipes.image',
             'users.name',
+            'favorites.favorite',
             DB::raw('AVG(reviews.rating) as rating')
             )
             ->join('users', 'users.id', '=', 'recipes.user_id')
             ->leftJoin('reviews', 'reviews.recipe_id', '=', 'recipes.id')
-            ->groupBy('recipes.id')
+            ->leftJoin('favorites', 'favorites.recipe_id', '=', 'recipes.id')
+            ->groupBy('recipes.id', 'recipes.title', 'recipes.description', 'recipes.created_at', 'recipes.image', 'users.name', 'favorites.favorite')
             ->orderBy('recipes.created_at', 'desc');
 
         if(!empty($filters)) {
@@ -87,6 +90,11 @@ class RecipeController extends Controller
             // タイトルで絞り込み
             if(!empty($filters['title'])) {
                 $query->where('recipes.title', 'like', '%'.$filters['title'].'%');
+            }
+
+            // favorite
+            if(!empty($filters['favorite'])){
+                $query->where('favorites.favorite', '=', $filters['favorite']);
             }
         }
 
@@ -192,7 +200,12 @@ class RecipeController extends Controller
             $is_reviewed = $recipe->reviews->contains('user_id', Auth::id());
         }
 
-        return view('recipes.show', compact('recipe', 'is_my_recipe', 'is_reviewed'));
+        $is_favorite = Favorite::select('favorite')
+                    ->where('user_id', Auth::id())
+                    ->where('recipe_id', $id)
+                    ->first();
+
+        return view('recipes.show', compact('recipe', 'is_my_recipe', 'is_reviewed', 'is_favorite'));
     }
 
     /**

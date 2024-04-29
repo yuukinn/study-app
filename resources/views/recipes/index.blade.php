@@ -47,7 +47,14 @@
                             <label for="category{{ $category['id'] }}">{{ $category['name'] }}</label>
                         </div>
                     @endforeach
-                </div>    
+                </div>
+                <div class="mb-4 p-6 border border-gray-300">
+                    <label for="">My List</label>
+                     <div class="ml-4 mb-2">
+                        <input type="checkbox" name="favorite" value="1" {{ ($filters['favorite'] ?? null) == '1' ? 'checked' : '' }}>
+                        <label for="">お気に入り</label>
+                     </div>
+                </div>  
                 <input type="text" name="title" value="{{ $filters['title'] ?? '' }}" placeholder="レシピ名を入力" class="w-full p-2 border border-gray-600 mb-4" >
                 <div class="text-center">
                     <button type="submit" class="font-bold py-2 px-4 bg-green-500 hover:bg-green-700 text-white rounded">検索</button>
